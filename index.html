@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Aaditya's Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="SF-Pro-Rounded-Thin.otf"stylesheet">
+<!-- ==================== GSAP + ScrollTrigger ==================== -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<!-- ==================== Typed.js (for autotype) ==================== -->
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+<style>
+/* ──────────────────────
+   CSS VARIABLES (Theme)
+   ────────────────────── */
+:root {
+  --clr-bg          : #e8e7e2;
+  --clr-surface    : #e8e7e2;
+  --clr-primary    : #3d3d3f;
+  --clr-primary-dk : #000000;
+  --clr-muted      : #050505;
+  --clr-text       : #434343;
+  --radius-sm      : .4rem;
+  --radius-lg      : .8rem;
+  --shadow-sm      : 0 2px 6px rgba(0,0,0,.06);
+  --shadow-lg      : 0 8px 24px rgba(0,0,0,.1);
+  --font-sans       : 'SF-Pro-Rounded-Thin', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Reset & globals */
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--clr-bg);
+  color: var(--clr-text);
+  line-height:1.6;
+  overflow-x:hidden;
+  padding-bottom: 0rem;
+}
+
+/* Utility helpers */
+.container { margin:0 auto; padding:0 1.2rem; }
+.text-center { text-align:center; }
+.mt-2 { margin-top:2rem; }
+
+/* ------- Navigation ------- */
+nav {
+  position:fixed; inset-inline:0; top:0;
+  background:rgba(255,255,255,0);
+  backdrop-filter:blur(0px);
+  box-shadow:0 0px 0px rgba(0,0,0,.07);
+  z-index:1000;
+  transition:background .3s, box-shadow .3s;
+}
+nav.scrolled { background:#e8e7e2;; box-shadow:0 0px 0px rgba(0,0,0,.1); }
+nav .nav-container {
+  display:flex; justify-content:space-between; align-items:center;
+  height:64px;
+}
+
+.icon{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.logo { font-weight:700; font-size:1.3rem; color:var(--clr-primary); }
+.menu { display:flex; gap:1.6rem; font-weight:600; }
+.menu a {
+  color:var(--clr-muted);
+  position:relative;
+  transition:color .2s;
+  text-decoration: none;
+}
+.menu a:hover,
+.menu a.active { color:var(--clr-primary); }
+.menu a::after {
+  content:"";
+  position:absolute; left:0; bottom:-4px; height:2px; width:100%;
+  background:var(--clr-primary);
+  transform:scaleX(0);
+  transition:transform .3s;
+}
+.menu a:hover::after { transform:scaleX(1); }
+
+/* Mobile hamburger */
+#nav-toggle { display:none; }
+.hamburger {
+  display:none; flex-direction:column; gap:.4rem; cursor:pointer;
+}
+.hamburger span { width:24px; height:2px; background:#555; transition:all .3s; }
+
+@media (max-width:768px) {
+  .menu {
+    position:fixed; inset:0; background:rgba(255,255,255,.97);
+    flex-direction:column; justify-content:center; align-items:center;
+    gap:2rem; transform:translateX(100%);
+    transition:transform .3s;
+  }
+  .menu.open { transform:translateX(0); }
+  .hamburger { display:flex; }
+}
+
+/* ------- Hero / Home ------- */
+#home {
+  min-height:100vh;
+  position:relative;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  text-align:center; overflow:hidden;
+}
+#home .bg {
+  position:absolute; inset:0;
+  background:linear-gradient(135deg,#e8e7e2,#000000);
+  z-index:-1;
+}
+#home.a {
+    height: 30px;
+}
+#home .blob {
+  position:absolute; inset:0; width:150%; height:100%; pointer-events:none;
+  background:url('data:image/svg+xml;charset=UTF-8,<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"><path fill="%23ffffff22" d="M300,0C369,0,438,26,483,71C528,115,549,180,543,244C537,308,505,371,460,415C415,459,357,485,298,495C239,505,179,499,122,470C65,440,10,387,6,324C2,261,50,188,95,136C140,84,210,46,277,26C344,6,231,0,300,0Z"/></svg>') no-repeat center/cover;
+  animation:blobMove 20s linear infinite;
+}
+@keyframes blobMove {
+  0%   { transform:translate(-10%, -5%) rotate(0deg); }
+  50%  { transform:translate(10%, 5%) rotate(180deg); }
+  100% { transform:translate(-10%, -5%) rotate(360deg); }
+}
+#home h1 {
+  font-size: clamp(2.5rem,8vw,4rem);
+  color:var(--clr-primary);
+  margin-bottom:.6rem;
+}
+#home p {
+  font-size:1.1rem; color:var(--clr-muted); max-width:680px;
+}
+.cta-btn {
+  margin-top:2rem;
+  padding:.9rem 2rem;
+  background:var(--clr-primary);
+  color:#fff;
+  border:none; border-radius:30px;
+  font-weight:600;
+  cursor:pointer;
+  transition:background .2s, transform .2s;
+}
+.cta-btn:hover { background:var(--clr-primary-dk); transform:translateY(-3px); }
+
+/* ------- Section titles ------- */
+.section-title {
+  font-size: clamp(1.9rem,5vw,2.6rem);
+  margin-bottom:1.6rem;
+  color:var(--clr-primary);
+  position:relative;
+}
+.section-title::after {
+  content:""; width:80px; height:4px; background:var(--clr-primary);
+  position:absolute; left:50%; bottom:-12px; transform:translateX(-50%);
+}
+
+/* ------- About ------- */
+#about .content {
+  display:flex; flex-direction:column; align-items:center; gap:2rem;
+}
+#about .portrait {
+  width:200px; height:200px;
+  border-radius:50%; overflow:hidden;
+  border:5px solid var(--clr-primary);
+  box-shadow:var(--shadow-sm);
+  transform-origin:center center;
+  transform:scale(0); opacity:0;   /* animated by GSAP */
+}
+#about .portrait img { width:100%; height:100%; object-fit:cover; }
+#about p { max-width:720px; font-size:1rem; line-height:1.7; }
+
+/* ------- Education ------- */
+/* Column-wise layout for Education */
+#education .cards {
+  column-count: 1;           /* mobile default */
+  column-gap: 1.8rem;        /* same gap you used */
+}
+
+/* Prevent cards from splitting across columns */
+#education .edu-card {
+  break-inside: avoid;
+  margin-bottom: 1.8rem;     /* vertical spacing between cards in each column */
+}
+
+/* Responsive columns */
+@media (min-width: 700px) {
+  #education .cards { column-count: 2; }
+}
+@media (min-width: 1024px) {
+  #education .cards { column-count: 3; }
+}
+.edu-card {
+  position: relative;
+  background: var(--clr-surface);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; /* ensures hover effect stays inside card */
+  transition: transform .3s, box-shadow .3s;
+}
+
+.edu-card::before {
+  content: '';
+  position: absolute;
+  top: var(--y, 0);
+  left: var(--x, 0);
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  background: var(--clr-primary);
+  border-radius: 50%;
+  transition: width 0.6s ease, height 0.6s ease;
+  z-index: 0;
+}
+
+.edu-card:hover::before {
+  width: 250%;
+  height: 250%;
+}
+
+.edu-card * {
+  position: relative;
+  z-index: 1; /* keeps text above color */
+  transition: color 1s ease;
+}
+
+.edu-card:hover h3,
+.edu-card:hover p {
+  color: #c2bbac;
+}
+
+/* -------  (Showcase) ------- */
+#projects .grid {
+  display:grid; gap:1.8rem; grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
+}
+.proj-card {
+  background:var(--clr-surface);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:var(--shadow-sm);
+  transition:transform .3s, box-shadow .3s, background .3s, color .3s;
+}
+.proj-card:hover {
+  transform:translateY(-8px) scale(1.03);
+  background:var(--clr-primary);
+  color:#fff;
+}
+.proj-card img { width:100%; height:180px; object-fit:cover; }
+.proj-card .info {
+  padding:1rem;
+  transition:color .3s;
+}
+.proj-card .info h4,
+.proj-card .info p,
+.proj-card .info a { transition:color .3s; }
+.proj-card:hover .info h4,
+.proj-card:hover .info p,
+.proj-card:hover .info a { color:#fff; }
+.proj-card a {
+  display:inline-block; margin-top:.6rem;
+  color:var(--clr-primary-dk); font-weight:600;
+}
+
+/* ------- Skills (new) ------- */
+#skills .skill-category { margin-bottom:2rem; }
+#skills .skill-heading {
+  font-size:1.3rem; margin-bottom:.8rem; color:var(--clr-primary);
+}
+#skills .skill-list {
+  display:flex; flex-wrap:wrap; gap:0.8rem;
+}
+#skills .skill-pill {
+  background:var(--clr-surface);
+  padding:.5rem 0.9rem;
+  border-radius:var(--radius-sm);
+  box-shadow:var(--shadow-sm);
+  text-align:center;
+  min-width:80px;
+  transition:background .2s, transform .2s, color .2s;
+}
+#skills .skill-pill .skill-name {
+  display:inline-block; font-weight:600; color:var(--clr-primary);
+}
+#skills .skill-pill .skill-tick {
+  width:0.9rem; height:0.9rem; vertical-align:middle;
+  margin-left:4px;
+}
+#skills .skill-pill:hover {
+  background:var(--clr-primary);
+  color:#fff;
+  transform:scale(1.06);
+}
+#skills .skill-pill:hover .skill-name,
+#skills .skill-pill:hover .skill-tick { filter: brightness(0) invert(1); }
+
+/* ------- Contact (existing form styles kept) ------- */
+#contact form {
+  max-width:560px; margin:0 auto; display:grid; gap:1rem;margin-bottom:4px; 
+}
+#contact input,
+#contact textarea {
+  width:100%; padding:.9rem; border:1px solid #e2e2e2;
+  border-radius:var(--radius-sm); font-size:1rem; resize:vertical;
+}
+#contact button {
+  padding:.9rem 2rem; background:var(--clr-primary);
+  color:#fff; border:none; border-radius:30px;
+  font-weight:600; cursor:pointer;
+  transition:background .2s;
+}
+#contact button:hover { background:var(--clr-primary-dk); }
+
+/* ------- Footer ------- */
+footer {
+  background:var(--clr-primary);
+  color:#fff; text-align:center; padding:1.5rem 0;
+  font-size:.9rem;
+}
+footer a { color:#fff; text-decoration:underline; }
+
+/* ------- Reveal Animations (generic) ------- */
+.reveal {
+  opacity:0; transform:translateY(30px);
+  transition:opacity .9s ease-out, transform .9s ease-out;
+}
+.reveal.active { opacity:1; transform:none; }
+.reveal--fade   { transform:none; }
+.reveal--slide  { transform:translateX(-40px); }
+.reveal--zoom   { transform:scale(0.92); }
+.reveal--zoom.active { transform:scale(1); }
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion:reduce) {
+  .reveal, .blob { transition:none; animation:none; }
+}
+
+/* Mobile tweaks */
+@media (max-width:600px) {
+  #home h1 {font-size:2.4rem;}
+  .nav-container {flex-direction:column; gap:.6rem;}
+}
+
+/* ---- Contact cards (ADD) ---- */
+#contact .contact-wrap{
+  max-width:720px; margin:0 auto;
+  display:grid; gap:1rem;
+  margin-bottom: 200px;
+}
+#contact .contact-card{
+  display:flex; align-items:center; gap:1rem;
+  padding:1rem 1.2rem;
+  background:var(--clr-surface);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  text-decoration:none;
+  color:inherit;
+  transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+}
+#contact .contact-card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-lg);
+  background:var(--clr-primary);
+  color:#fff;
+}
+#contact .contact-icon{
+  width:36px; height:36px; flex:0 0 36px;
+  filter: grayscale(0);
+  transition: filter .25s ease, transform .25s ease;
+}
+#contact .contact-card:hover .contact-icon{
+  filter: brightness(0) invert(1);
+  transform: scale(1.06);
+}
+#contact .contact-text{ display:flex; flex-direction:column; }
+#contact .contact-label{
+  font-size:.85rem; color:var(--clr-primary); font-weight:700;
+  transition:color .25s ease;
+}
+#contact .contact-card:hover .contact-label{ color:#fff; }
+#contact .contact-value{ font-size:1rem; font-weight:600; }
+
+/* mobile tweak for contact */
+@media (max-width:600px){
+  #contact .contact-wrap{ gap:.9rem; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ========== NAVIGATION ========== -->
+<nav id="navbar">
+  <div class="nav-container container">
+    <div class="logo">Aaditya Grover</div>
+
+    <!-- Hamburger for mobile -->
+    <input type="checkbox" id="nav-toggle" />
+    <label for="nav-toggle" class="hamburger">
+      <span></span><span></span><span></span>
+    </label>
+
+    <div class="menu">
+      <a href="#home" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#education">Education</a>
+      <a href="#projects">Showcase</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO / HOME ========== -->
+<section id="home" class="container">
+  <div class="bg"></div>
+  <div class="blob"></div>
+
+  <!-- Only the name auto-types -->
+  <h1 class="reveal">Hi, I’m <span class="auto-type"></span></h1>
+
+  <p class="reveal" style="transition-delay:.2s;">
+    a  Rising Junior at <strong>UC Davis</strong> studying Computer Science.
+    Passionate about leveraging machine learning and AI to build intelligent, scalable applications.
+  </p>
+  <button class="cta-btn reveal" style="transition-delay:.4s;"
+          onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'});">
+    Get in Touch
+  </button>
+  <div class="icon">
+  <a class="contact-card" href="https://www.linkedin.com/in/aadityagrover/" target="_blank" rel="noopener">
+    <img class="contact-icon" src="lin.svg" alt="LinkedIn icon" height="20px" style="margin-top: 10px ;padding-right: 15px;"/>
+  </a>
+  <a class="contact-card" href="https://github.com/groverucd" target="_blank" rel="noopener">
+    <img class="contact-icon" src="git.webp" alt="github icon" height="25px" style="margin-top: 10px ;"/>
+  </a>
+</div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section id="about" class="container" style="padding-top: 80px;">
+  <h2 class="section-title reveal">About Me</h2>
+  <div class="content reveal" data-delay="0.2">
+    <div class="portrait">
+      <img src="cerebras.jpg" alt="Aaditya Grover">
+    </div>
+    <p>
+      My name is Aaditya Grover, and I am a student at the University of California, Davis, majoring in Computer Science.
+      I’m passionate about building innovative solutions at the intersection of data, design, and technology.
+      With hands‑on experience in Python, C++, Java, and web development (React, Node.js), I enjoy tackling real‑world problems—whether it’s through hackathons,
+      research projects, or collaborative team work. I’m always eager to connect with peers and professionals in the tech community,
+      and I’m open to contributing to impactful projects in Computer Science or related fields. Feel out to reach out!
+    </p>
+  </div>
+</section>
+
+<!-- ========== EDUCATION ========== -->
+<section id="education" class="container" style="padding-top: 80px;">
+  <h2 class="section-title reveal">Education</h2>
+  <div class="cards">
+    <div class="edu-card">
+      <h3>University of California, Davis</h3>
+      <p><strong>Major:</strong> Computer Science</p>
+      <p><strong>Class:</strong> Rising Junior</p>
+      <p>                         </p>
+    </div>
+    <div class="edu-card">
+      <h3>Relevant Coursework</h3>
+      <p>Data Structures &amp; Algorithms and Data Design</p>
+      <p>Machine Learning</p>
+      <p>Software Engineering</p>
+    </div>
+    <div class="edu-card">
+      <h3>Honors &amp; Activities</h3>
+      <p>Member – Google Developer Student Club</p>
+      <p>Member – Formula Racing Club UCD</p>
+      <p>Volunteer - TreeHacks Stanford</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SHOWCASE ========== -->
+<section id="projects" class="container"style="padding-top: 80px;">
+  <h2 class="section-title reveal">Showcase</h2>
+  <div class="grid">
+    <!-- Project 1 -->
+    <div class="proj-card">
+      <img src="resii.png" alt="Resume">
+      <div class="info">
+        <h4>My Resume</h4>
+        <p>A comprehensive look at my skills, experience, and achievements.</p>
+        <a href="RESUME FINAL.pdf" target="_blank">Download →</a>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="proj-card">
+      <img src="watertwoer.avif" alt="Eco‑Route Planner">
+      <div class="info">
+        <h4>AggieClaim</h4>
+        <p>Developed a Swift prototype app during HackDavis to help UC Davis students find their prized belongings across the city of Davis.</p>
+        <a href="https://www.youtube.com/shorts/_rGtpUw1vaA" target="_blank">View Demo →</a>
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="proj-card">
+      <img src="eye.jpg" alt="Ocular Disease image">
+      <div class="info">
+        <h4>Ocular Disease Recognition</h4>
+        <p>Ongoing project: Collaborating with my team at the Google Developer Student Club to create a website for ocular disease recognition powered by machine learning.</p>
+        <a href="https://team-lambda-nine.vercel.app/" target="_blank">Website→</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SKILLS ========== -->
+<section id="skills" class="container" style="padding-top: 80px;">
+  <h2 class="section-title">Skills</h2>
+
+  <!-- Languages -->
+  <div class="skill-category">
+    <h3 class="skill-heading">Languages</h3>
+    <div class="skill-list">
+      <div class="skill-pill"><span class="skill-name">Python</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+      <div class="skill-pill"><span class="skill-name">C++</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+      <div class="skill-pill"><span class="skill-name">C</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+      <div class="skill-pill"><span class="skill-name">JavaScript</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+      <div class="skill-pill"><span class="skill-name">Swift</span></div>
+      <div class="skill-pill"><span class="skill-name">Rust</span></div>
+      <div class="skill-pill"><span class="skill-name">SQL</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+    </div>
+  </div>
+
+  <!-- Front‑End Frameworks & Libraries -->
+  <div class="skill-category">
+    <h3 class="skill-heading">Front‑End Frameworks &amp; Libraries</h3>
+    <div class="skill-list">
+      <div class="skill-pill"><span class="skill-name">React</span><img class="skill-tick" src="yo.png"></div>
+      <div class="skill-pill"><span class="skill-name">Flutter</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+      <div class="skill-pill"><span class="skill-name">HTML/CSS</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+      <div class="skill-pill"><span class="skill-name">D3.js</span></div>
+    </div>
+  </div>
+
+  <!-- Back‑End & Data -->
+  <div class="skill-category">
+    <h3 class="skill-heading">Back‑End &amp; Data</h3>
+    <div class="skill-list">
+      <div class="skill-pill"><span class="skill-name">Node.js</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+      <div class="skill-pill"><span class="skill-name">Express.js</span></div>
+      <div class="skill-pill"><span class="skill-name">MongoDB</span></div>
+      <div class="skill-pill"><span class="skill-name">Docker</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+      <div class="skill-pill"><span class="skill-name">TensorFlow</span><img class="skill-tick" src="yo.png" alt="verified"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT (NEW) ========== -->
+<section id="contact" class="container">
+  <h2 class="section-title reveal">Contact</h2>
+
+  <div class="contact-wrap reveal" data-delay=".15">
+    <!-- Email -->
+    <a class="contact-card" href="mailto:grover@ucdavis.edu">
+      <img class="contact-icon" src="email.svg" alt="Email icon" />
+      <div class="contact-text">
+        <span class="contact-label">Email</span>
+        <span class="contact-value">grover@ucdavis.edu</span>
+      </div>
+    </a>
+
+    <!-- LinkedIn -->
+    <a class="contact-card" href="https://www.linkedin.com/in/aadityagrover/" target="_blank" rel="noopener">
+      <img class="contact-icon" src="lin.svg" alt="LinkedIn icon" />
+      <div class="contact-text">
+        <span class="contact-label">LinkedIn</span>
+        <span class="contact-value"></span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer style ="background-color: #e8e7e2;">
+  <p style = "color: #000000;">
+    © 2025 Aaditya Grover
+  </p>
+
+  <a style = "padding: 20px;" href="mailto:grover@ucdavis.edu" target="_blank"><img src= "email.svg" height=25px></a> 
+  <a style = "padding: 20px;" href="https://github.com/groverucd" target="_blank"><img src="git.webp" height=25px></a> 
+  <a style = "padding: 20px" href="https://www.linkedin.com/in/aadityagrover/" target="_blank"><img src = "lin.svg" height=25px></a>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+/* ---------- Navbar scroll effect ---------- */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 750) navbar.classList.add('scrolled');
+  else navbar.classList.remove('scrolled');
+});
+
+/* ---------- Reveal on scroll (Apple‑like) ---------- */
+const reveals = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const delay = entry.target.dataset.delay || 0;
+      entry.target.style.transitionDelay = `${delay}s`;
+      entry.target.classList.add('active');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: "0px 0px 40px 0px" });
+reveals.forEach(el => revealObserver.observe(el));
+
+/* ---------- Mobile menu toggle (CSS only) ---------- */
+const navToggle = document.getElementById('nav-toggle');
+const menu = document.querySelector('.menu');
+navToggle.addEventListener('change', () => {
+  menu.classList.toggle('open', navToggle.checked);
+});
+
+/* ---------- GSAP ScrollTrigger animations ---------- */
+gsap.registerPlugin(ScrollTrigger);
+
+/* 1️⃣ Background fade‑out (hero → about) */
+gsap.to('#home .bg', {
+  opacity: 0,
+  ease: 'none',
+  scrollTrigger: {
+    trigger: '#about',
+    start: 'top bottom',
+    end:   'top top',
+    scrub: true,
+  }
+});
+
+/* 2️⃣ Portrait grow‑in */
+gsap.fromTo('.portrait',
+  {scale:0, opacity:0},
+  {
+    scale:1,
+    opacity:1,
+    ease: 'power2.out',
+    scrollTrigger: {
+      trigger: '.portrait',
+      start: 'top 80%',
+      end:   'top 30%',
+      scrub: true,
+    }
+  }
+);
+
+/* 3️⃣ Education – staggered reveal */
+gsap.from('#education .edu-card', {
+  opacity: 0,
+  y: 30,
+  duration: 0.6,
+  ease: 'power2.out',
+  stagger: 0.15,
+  scrollTrigger: {
+    trigger: '#education',
+    start: 'top 85%',
+    end:   'bottom 15%',
+    scrub: true,
+  }
+});
+
+/* 4️⃣ Showcase – simple fade‑in / fade‑out */
+gsap.from('#projects .grid', {
+  opacity: 0,
+  y: 30,
+  duration: 0.9,
+  ease: 'power2.out',
+  scrollTrigger: {
+    trigger: '#projects',
+    start: 'top 85%',
+    end:   'bottom 15%',
+    scrub: true,
+  }
+});
+
+/* 5️⃣ Skills – fade‑in + slide‑up + subtle zoom */
+gsap.from('#skills', {
+  opacity: 0,
+  y: 30,
+  scale: 0.95,
+  duration: 0.9,
+  ease: 'power2.out',
+  scrollTrigger: {
+    trigger: '#skills',
+    start: 'top 85%',
+    end:   'bottom 15%',
+    scrub: true,
+  }
+});
+
+/* 6️⃣ Contact – card stagger reveal */
+gsap.from('#contact .contact-card', {
+  opacity: 0,
+  y: 24,
+  duration: 0.5,
+  ease: 'power2.out',
+  stagger: 0.12,
+  scrollTrigger: {
+    trigger: '#contact',
+    start: 'top 85%',
+    end:   'bottom 15%',
+    scrub: true,
+  }
+});
+
+/* 7️⃣ Typed.js auto-type effect for name only */
+var typed = new Typed(".auto-type", { 
+  strings: ["Aaditya Grover","groverucd"],
+  typeSpeed: 150,
+  backSpeed: 150,
+  loop: true
+});
+</script>
+<script>
+    document.querySelectorAll('.edu-card').forEach(card => {
+      card.addEventListener('mouseenter', e => updateHoverPos(e));
+      card.addEventListener('mousemove', e => updateHoverPos(e));
+    
+      function updateHoverPos(e) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--x', `${x}px`);
+        card.style.setProperty('--y', `${y}px`);
+      }
+    });
+    </script>
+    
+</body>
+</html>
